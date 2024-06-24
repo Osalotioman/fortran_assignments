@@ -1,0 +1,23 @@
+program csavg10
+ implicit none
+ integer :: i
+ real :: scores, avg, sum
+ dimension :: scores(10, 1)
+
+ ! Author: OsazuwaEmmanuelOsalotioman.
+ ! Digital copy of source code: https://osalotioman.github.io/fortran_assignments/p2
+ ! Disclaimer: digital copy will be made available a day or two after assignment submission.
+ ! This code has been compiled and tested using gfortran, gcc version 13.2.0 (Debian 13.2.0-24).
+ ! I decided not to overkill this time as I did in https://osalotioman.github.io/fortran_assignments/p1, keeping it simple.
+
+ print *, "Enter the real number scores of the 10 students on the next 10 lines:"
+ sum = 0.0
+ do i = 1, 10
+  read(*,12) scores(i, 1)
+  sum = sum + scores(i, 1)
+ end do
+ avg = sum / 10
+
+ print *, "Averager score: ",avg
+12 format(f5.2)
+end program csavg10

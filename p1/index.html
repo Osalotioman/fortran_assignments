@@ -1,0 +1,108 @@
+program sq
+  implicit none
+  real :: a, b, c, p, q, rp, im, x1, x2
+  integer :: op, i, ios
+  character(len=100) :: fn
+  logical :: vi
+
+  print *, "Program to solve 30 quadratic equations by Osalotioman"
+  print *, "Input will be read as the coefficients of the terms in the quadratic equation."
+  print *, "Three real numbers a, b, c separated by space on 30 lines."
+
+10 continue
+  print *, "Enter:"
+  print *, "1. To read input from file."
+  print *, "2. To read input from terminal."
+  print *, "Option: "
+  read (*,*, iostat=ios) op
+
+  if (ios /= 0) then
+    print *, "Invalid input. Please enter a number (1 or 2)."
+    goto 10
+  endif
+
+20 continue
+  vi = .false.
+  if (op == 1) then
+    print *, "Enter the filename: "
+    read(*,*, iostat=ios) fn
+    if (ios /= 0) then
+      print *, "Invalid filename input."
+      goto 20
+    endif
+    open(unit=10, file=fn, status='old', action='read', iostat=ios)
+    if (ios /= 0) then
+      print *, "Error opening file. Try again."
+      goto 20
+    endif
+    vi = .true.
+  elseif (op == 2) then
+    vi = .true.
+  else
+    print *, "Invalid option. Try again."
+    goto 10
+  endif
+
+  if (vi) then
+    open(unit=11, file='r.txt', status='unknown', action='write', iostat=ios)
+    if (ios /= 0) then
+      print *, "Error opening result file."
+      goto 20
+    endif
+
+    do i = 1, 30
+      if (op == 1) then
+        read(10,*, iostat=ios) a, b, c
+        if (ios /= 0) then
+          print *, "Error reading from file. Ensure the file has 30 lines of 3 real numbers each."
+          close(10)
+          close(11)
+          goto 20
+        endif
+      elseif (op == 2) then
+        print *, "Enter coefficients a, b, c for equation ", i, ":"
+        read(*,*, iostat=ios) a, b, c
+        if (ios /= 0) then
+          print *, "Invalid input. Please enter three real numbers separated by spaces."
+          goto 20
+        endif
+      endif
+
+      if (a == 0.0) then
+        print *, "Coefficient 'a' cannot be zero. This is not a quadratic equation."
+        if (op == 1) then
+          close(10)
+        endif
+        close(11)
+        goto 20
+      endif
+
+      p = b * b - 4.0 * a * c
+      if (p < 0.0) then
+        ! Complex roots
+        p = -p
+        q = sqrt(p)
+        rp = -b / (2.0 * a)
+        im = q / (2.0 * a)
+        print *, "Solution to equation ", i, ":"
+        print *, "x1:", rp, "+", im, "i"
+        print *, "x2:", rp, "-", im, "i"
+        write(11,*) "Equation ", i, ": x1 = ", rp, " + ", im, "i, x2 = ", rp, " - ", im, "i"
+      else
+        ! Real roots
+        q = sqrt(p)
+        x1 = (-b + q) / (2.0 * a)
+        x2 = (-b - q) / (2.0 * a)
+        print *, "Solution to equation ", i, ":"
+        print *, "x1:", x1
+        print *, "x2:", x2
+        write(11,*) "Equation ", i, ": x1 = ", x1, ", x2 = ", x2
+      endif
+    end do
+    if (op == 1) then
+      close(10)
+    endif
+    close(11)
+    print *, "Results have been saved to r.txt"
+  endif
+end program sq
